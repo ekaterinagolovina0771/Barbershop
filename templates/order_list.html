@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список заявок</title>
+</head>
+<body>
+    <h1>Список заявок</h1>
+    <ul>
+    {% for order in orders %}
+    <li>
+        <p>Идентификатор: {{ order.id }}</p>
+        <p>Клиент: {{ order.client_name }}</p>
+        <p>Статус: {{ order.status }}</p>
+    </li>
+    {% endfor %}
+    <p>print(orders)</p>
+    <p>Количество заявок: {{ orders|length }}</p>
+</ul>
+</body>
+</html>

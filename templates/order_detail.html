@@ -1,0 +1,24 @@
+{% comment %} {
+        "id": 1,
+        "client_name": "Пётр 'Безголовый' Головин",
+        "services": ["Стрижка под 'Горшок'", "Полировка лысины до блеска"],
+        "master_id": 1,
+        "date": "2025-03-20",
+        "status": STATUS_NEW
+    } {% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Заявка №{{ order.id }}</title>
+</head>
+<body>
+    <h1> Заявка №{{ order.id }}</h1>
+    <p>Клиент: {{ order.client_name }}</p>
+    <p>Услуга: {{ order.services }}</p>
+    <p>Дата: {{ order.date }}</p>
+    <p>Статус: {{ order.status }}</p>
+</body>
+</html>

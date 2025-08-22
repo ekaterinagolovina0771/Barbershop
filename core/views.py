@@ -1,23 +1,27 @@
 # core/views.py
 from django.shortcuts import render, HttpResponse
+from .data import masters, services, orders
 
 def landing(request) -> HttpResponse:
     '''
     Отвечает за маршрут '/'
     '''
-    return HttpResponse("<h1>Главная страница</h1>")
-
+    return render(request, "landing.html")
+    
 def thanks(request) -> HttpResponse:
     '''
     Отвечает за маршрут 'tanks/'
     '''
-    return HttpResponse("<h1>Спасибо за заявку</h1>")
+    return render(request, "thanks.html")
 
 def orders_list(request) -> HttpResponse:
     '''
     Отвечает за маршрут 'orders/'
     '''
-    return HttpResponse("<h1>Список заявок</h1>")
+    context = {
+        "orders": orders,
+    }
+    return render(request, "order_list.html", context=context)
 
 def order_detail(request, order_id) -> HttpResponse:
     '''
@@ -25,5 +29,15 @@ def order_detail(request, order_id) -> HttpResponse:
     param request: HttpRequest
     param order_id: id заявки
     '''
-    return HttpResponse(f"<h1>Детали заявки {order_id}</h1>")
+    order = [order for order in orders if order["id"] == order_id]
+    try:
+        order = order[0]
+        context = {
+            "order": order,
+        }
+    except IndexError:
+        return HttpResponse("<h1>Заявка не найдена</h1>", status=404)
+
+    rendom = 1
+    return render(request, "order_detail.html", context=context)
 
