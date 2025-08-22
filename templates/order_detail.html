@@ -6,12 +6,13 @@
         "date": "2025-03-20",
         "status": STATUS_NEW
     } {% endcomment %}
-
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
     <title>Заявка №{{ order.id }}</title>
 </head>
 <body>
@@ -20,5 +21,7 @@
     <p>Услуга: {{ order.services }}</p>
     <p>Дата: {{ order.date }}</p>
     <p>Статус: {{ order.status }}</p>
+    <script src="{% static 'js/main.js' %}"></script>
+
 </body>
 </html>
