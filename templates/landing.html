@@ -1,15 +1,24 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-    <title>Главная страница</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Главная страница{% endblock title %}
+{% block content %}
     <h1>Главная страница</h1>
     <p>Добро пожаловать на наш сайт!</p>
-    <script src="{% static 'js/main.js' %}"></script>
-</body>
-</html>
+    <section id="about">
+        <h2>О нас</h2>
+        <p>Мы - команда профессиональных барберов, предоставляющая услуги по стрижке и уходу за волосами.</p>
+    </section>
+    <section id="services">
+        <h2>Услуги</h2>
+        <ul>
+        </ul>
+    </section>
+    <section id="masters">
+        <h2>Мастера</h2>
+        <ul>
+        </ul>
+    </section>
+    <section id="record">
+        <h2>Запись</h2>
+        <p>Чтобы записаться на прием, пожалуйста, позвоните нам по телефону или оставьте заявку на сайте.</p>
+    </section>
+{% endblock content %}

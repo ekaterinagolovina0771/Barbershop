@@ -1,27 +1,8 @@
-{% comment %} {
-        "id": 1,
-        "client_name": "Пётр 'Безголовый' Головин",
-        "services": ["Стрижка под 'Горшок'", "Полировка лысины до блеска"],
-        "master_id": 1,
-        "date": "2025-03-20",
-        "status": STATUS_NEW
-    } {% endcomment %}
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
-    <title>Заявка №{{ order.id }}</title>
-</head>
-<body>
-    <h1> Заявка №{{ order.id }}</h1>
-    <p>Клиент: {{ order.client_name }}</p>
-    <p>Услуга: {{ order.services }}</p>
-    <p>Дата: {{ order.date }}</p>
-    <p>Статус: {{ order.status }}</p>
-    <script src="{% static 'js/main.js' %}"></script>
-
-</body>
-</html>
+{% extends "base.html" %}
+{% block title %}Заявка №{{ order.id }}{% endblock title %}
+{% block content %}
+<div class="flex-container">
+    {% include "include_order_card.html" %}
+</div>
+<a href="{% url "orders" %}">Вернуться к списку заявок</a>
+{% endblock content %}

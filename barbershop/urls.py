@@ -7,9 +7,9 @@ from core.views import landing, thanks, orders_list, order_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', landing),
-    path('thanks/', thanks),
-    path('orders/', orders_list),
-    path('orders/<int:order_id>/', order_detail),
+    path('', landing, name='landing'),
+    path('thanks/', thanks, name='thanks'),
+    path('orders/', orders_list, name='orders'),
+    path('orders/<int:order_id>/', order_detail, name='order_detail'),
     ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
 
