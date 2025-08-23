@@ -21,7 +21,7 @@ def orders_list(request) -> HttpResponse:
     context = {
         "orders": orders,
     }
-    return render(request, "order_list.html", context=context)
+    return render(request, "orders_list.html", context=context)
 
 def order_detail(request, order_id) -> HttpResponse:
     '''
