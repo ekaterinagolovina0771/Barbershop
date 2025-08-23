@@ -1,11 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>
+        {% block title %}
+        Барбершоп "Стальная Борода"
+        {% endblock title %}
+    </title>
 </head>
 <body>
+    <header>
+        {% block extra_head %}{% endblock extra_head %}
+        {% block header %}{% include "include_menu.html" %}{% endblock header %}
+    </header>
+    <main>
+        {% block content %}{% endblock content %}
+    </main>
+    <footer>
+        {% block footer %}{% endblock footer %}
+    </footer>
+        
     
+    {% comment %} {% block styles %}{% endblock styles %}
+        {% block scripts %}{% endblock scripts %} {% endcomment %}
 </body>
 </html>
