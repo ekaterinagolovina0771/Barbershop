@@ -34,3 +34,12 @@ class Service(models.Model):
         is_popular = models.BooleanField(default=False, verbose_name="Популярная услуга")
         image = models.ImageField(upload_to="services/", blank=True, verbose_name="Изображение")
 
+class Review(models.Model):
+    text = models.TextField(verbose_name="Текст отзыва")
+    client_name = models.CharField(max_length=100, blank=True, verbose_name="Имя клиента")
+    master = models.ForeignKey("Master", on_delete=models.CASCADE, verbose_name="Мастер")
+    photo = models.ImageField(upload_to="reviews/", blank=True, null=True, verbose_name="Фотография")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    # rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="Оценка")
+    is_published = models.BooleanField(default=True, verbose_name="Опубликован")
+
