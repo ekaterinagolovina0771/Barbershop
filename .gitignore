@@ -3,5 +3,4 @@ __pycache__/
 .env
 .venv
 screens
-db.sqlite3
-
+.sqlite3
