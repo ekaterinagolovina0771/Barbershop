@@ -44,7 +44,7 @@ class Master(models.Model):
         is_active (bool): Активен ли мастер
     '''
     name = models.CharField(max_length=150, verbose_name="Имя")
-    photo = models.ImageField(_("Image"), upload_to="masters/", blank=True, verbose_name="Фотография")
+    photo = models.ImageField(upload_to="masters/", blank=True, verbose_name="Фотография")
     phone = models.CharField(max_length=20, verbose_name="Телефон")
     address = models.CharField(max_length=255, verbose_name="Адрес")
     experience = models.PositiveIntegerField(verbose_name="Стаж работы", help_text="Опыт работы в годах")
