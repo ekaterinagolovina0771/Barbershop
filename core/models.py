@@ -52,7 +52,7 @@ class Master(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Активен")
 
     def __str__(self):
-        return self.name
+        return f'Имя: {self.name}, телефон: {self.phone}'
 
 class Service(models.Model):
     '''
@@ -73,7 +73,8 @@ class Service(models.Model):
     image = models.ImageField(upload_to="services/", blank=True, verbose_name="Изображение")
 
     def __str__(self):
-        return self.name
+        return f'{self.name} - {self.price}'
+
 
 
 

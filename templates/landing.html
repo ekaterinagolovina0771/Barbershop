@@ -1,24 +1,28 @@
 {% extends "base.html" %}
-{% block title %}Главная страница{% endblock title %}
 {% block content %}
-    <h1>Главная страница</h1>
-    <p>Добро пожаловать на наш сайт!</p>
-    <section id="about">
-        <h2>О нас</h2>
-        <p>Мы - команда профессиональных барберов, предоставляющая услуги по стрижке и уходу за волосами.</p>
-    </section>
-    <section id="services">
-        <h2>Услуги</h2>
-        <ul>
-        </ul>
-    </section>
-    <section id="masters">
-        <h2>Мастера</h2>
-        <ul>
-        </ul>
-    </section>
-    <section id="record">
-        <h2>Запись</h2>
-        <p>Чтобы записаться на прием, пожалуйста, позвоните нам по телефону или оставьте заявку на сайте.</p>
-    </section>
+    {% comment %} Открываем BS5 контейнер и делаем секции-полосы лендинги {% endcomment %}
+    <div class="container mt-5">
+        {% comment %} Полоса - фото + описание
+        2 колонки первая - 4, вторая - 8
+        В первой описание
+        Во второй фото
+        {% endcomment %}
+        <div class="row">
+            <h2>Барбершоп "Стальная Борода"</h2>
+        </div>
+        {% comment %} 
+        Блок с мастерами
+        {% endcomment %}
+        <div class="row">
+            <h2 id="masters">Мастера</h2>
+        </div>
+        {% comment %} 
+        Блок с услугами
+        {% endcomment %}
+        <div class="row">
+            <h2 id="reviews">Отзывы</h2>
+        </div>
+        <div class="row">
+
+        </div>
 {% endblock content %}

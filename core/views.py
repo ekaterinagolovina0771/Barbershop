@@ -1,6 +1,8 @@
 # core/views.py
 from django.shortcuts import render, HttpResponse
 from .data import masters, services, orders
+from django.contrib.auth.decorators import login_required
+
 
 def landing(request) -> HttpResponse:
     '''
@@ -14,6 +16,7 @@ def thanks(request) -> HttpResponse:
     '''
     return render(request, "thanks.html")
 
+@login_required
 def orders_list(request) -> HttpResponse:
     '''
     Отвечает за маршрут 'orders/'
@@ -23,6 +26,7 @@ def orders_list(request) -> HttpResponse:
     }
     return render(request, "orders_list.html", context=context)
 
+@login_required
 def order_detail(request, order_id) -> HttpResponse:
     '''
     Отвечает за маршрут 'orders/<int:order_id>/'
@@ -38,6 +42,6 @@ def order_detail(request, order_id) -> HttpResponse:
     except IndexError:
         return HttpResponse("<h1>Заявка не найдена</h1>", status=404)
 
-    rendom = 1
-    return render(request, "order_detail.html", context=context)
+    else:
+        return render(request, "order_detail.html", context=context)
 
