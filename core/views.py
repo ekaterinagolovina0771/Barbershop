@@ -1,16 +1,26 @@
 # core/views.py
 from django.shortcuts import render, HttpResponse
 # from .data import orders
-from .models import Master, Service, Order
+from .models import Master, Service, Order, Review
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.db.models import Q, Avg
 
 
 def landing(request) -> HttpResponse:
-    '''
+    """
     Отвечает за маршрут '/'
-    '''
-    return render(request, "landing.html")
+    """
+    masters = Master.objects.all()
+    services = Service.objects.all()
+    reviews = Review.objects.all()  
+
+    context = {
+        "masters": masters,
+        "services": services,
+        "reviews": reviews,
+    }
+    return render(request, "landing.html", context=context)
+
     
 def thanks(request) -> HttpResponse:
     '''
@@ -97,3 +107,7 @@ def order_detail(request, order_id) -> HttpResponse:
     context = {'order': order}
     return render(request, "order_detail.html", context)
 
+def master_list(request):
+    masters = Master.objects.annotate(rating=Avg('reviews__rating')).values('name', 'rating')
+    print(masters)
+    return render(request, 'landing.html', {'masters': masters})

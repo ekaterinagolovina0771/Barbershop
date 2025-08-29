@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Order(models.Model):
     '''
@@ -94,6 +95,6 @@ class Review(models.Model):
     master = models.ForeignKey("Master", on_delete=models.CASCADE, verbose_name="Мастер")
     photo = models.ImageField(upload_to="reviews/", blank=True, null=True, verbose_name="Фотография")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
-    # rating = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="Оценка")
+    rating = models.PositiveSmallIntegerField(default=5,validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="Оценка")
     is_published = models.BooleanField(default=True, verbose_name="Опубликован")
 

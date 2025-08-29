@@ -13,48 +13,46 @@
                 </div>
             </div>
         </section>
-
-        {# Секция "Услуги" #}
-        <section id="services" class="py-5 bg-light">
-            <h2 class="text-center mb-4">Услуги</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <p>[Карточка услуги 1]</p>
-                </div>
-                <div class="col-md-4">
-                    <p>[Карточка услуги 2]</p>
-                </div>
-                <div class="col-md-4">
-                    <p>[Карточка услуги 3]</p>
-                </div>
-            </div>
-        </section>
-
         {# Секция "Мастера" #}
-        <section id="masters" class="py-5">
-            <h2 class="text-center mb-4">Наши мастера</h2>
-            <div class="row">
-                <div class="col-md-6 col-lg-3">
-                    <p>[Карточка мастера 1]</p>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <p>[Карточка мастера 2]</p>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <p>[Карточка мастера 3]</p>
-                </div>
-                <div class="col-md-6 col-lg-3">
-                    <p>[Карточка мастера 4]</p>
+        <section id="master" class="py-5 bg-light">
+            <h2 class="text-center mb-4">Мастера</h2>
+            <div class="container">
+                <div class="row justify-content-center flex-wrap overflow-auto">
+                    {% for master in masters %}
+                        <div class="col-md-6 col-lg-3 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p>Мастер: {{ master.name }}</p>
+                                    <p>Опыт: {{ master.experience }}</p>
+                                    <p>Услуги: {% for service in master.services.all %}{{ service.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</p>                         
+                                    <p>Оценка: {{ master.rating }}</p>
+                                    {% if master.photo %}
+                                        <img src="{{ master.photo.url }}" alt="Фото мастера" class="master-photo">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>
-
-        {# Секция "Записаться" #}
-        <section id="order" class="py-5 bg-light">
-            <h2 class="text-center mb-4">Записаться</h2>
-            <div class="row">
-                <div class="col-md-8 mx-auto">
-                    <p>[Форма для записи]</p>
+        {# Секция "Отзывы" #}
+        <section id="review" class="py-5 bg-light">
+            <h2 class="text-center mb-4">Отзывы</h2>
+            <div class="container">
+                <div class="row justify-content-center flex-wrap overflow-auto">
+                    {% for review in reviews %}
+                        <div class="col-md-6 col-lg-3 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p>Клиент: {{ review.client_name }}</p>
+                                    <p>Отзыв: {{ review.text }}</p>
+                                    {% comment %} <p>Оценка: {{ review.rating }}</p> {% endcomment %}
+                                    <p>Мастер: {{ review.master.name }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </section>

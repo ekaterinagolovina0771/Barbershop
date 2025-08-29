@@ -67,6 +67,23 @@ h1 {
   font-size: 0.9em;
 }
 
+.card {
+  height: 100%;
+}
+
+.master-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 /* Стили для статусов */
 .not_approved {
   color: #27ae60; /* Green */
