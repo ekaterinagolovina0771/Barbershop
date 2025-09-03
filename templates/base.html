@@ -21,13 +21,15 @@
         {% endblock title %}
     </title>
 </head>
-
+<body>
+    <header>
+        {% block header %}
         {% include 'include_menu.html' %}
-      </header>
-    
-      <main class="flex-grow-1">
-        {% block content %}{% endblock %}
-      </main>
+        {% endblock header %}
+    </header>
+    <main class="flex-grow-1">
+      {% block content %}{% endblock %}
+    </main>
     
       <footer class="footer mt-auto py-3 bg-dark text-white">
         <div class="container text-center">

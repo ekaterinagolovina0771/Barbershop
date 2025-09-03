@@ -1,18 +1,18 @@
 # core/views.py
 from django.shortcuts import render, HttpResponse
-# from .data import orders
 from .models import Master, Service, Order, Review
+from django.db.models import Q, Avg, Sum, Count
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q, Avg
+
 
 
 def landing(request) -> HttpResponse:
     """
     Отвечает за маршрут '/'
     """
-    masters = Master.objects.all()
+    masters = Master.objects.prefetch_related('services').annotate(num_services=Count('services'))
     services = Service.objects.all()
-    reviews = Review.objects.all()  
+    reviews = Review.objects.select_related('master').all()  
 
     context = {
         "masters": masters,
@@ -40,9 +40,9 @@ def orders_list(request) -> HttpResponse:
     # 1. поиск по телефону - search_by_phone
     # 2. поиск по имени - search_by_client_name
     # 3. поиск по тексту комментария - search_by_comment
-    checkbox_client_name = request.GET.getlist("search_by_client_name", "")
-    checkbox_phone = request.GET.getlist("search_by_phone", "")
-    checkbox_comment = request.GET.getlist("search_by_comment", "")
+    checkbox_client_name = request.GET.get("search_by_client_name", "")
+    checkbox_phone = request.GET.get("search_by_phone", "")
+    checkbox_comment = request.GET.get("search_by_comment", "")
     # ЧЕКББОКСЫ выборки по статусам
     # status_not_approved
     # status_approved
@@ -60,11 +60,11 @@ def orders_list(request) -> HttpResponse:
     # 1. Создаем Q-объект для текстового поиска
     search_q = Q()
     if search_query:
-        if checkbox_phone == "on":
-            search_q |= Q(phone__icontains  =search_query)
-        if checkbox_client_name == "on":
-            search_q |= Q(client_name__lower__contains=search_query.lower())
-        if checkbox_comment == "on":
+        if checkbox_phone:
+            search_q |= Q(phone__icontains=search_query)
+        if checkbox_client_name:
+            search_q |= Q(client_name__lower__icontains=search_query.lower())
+        if checkbox_comment:
             search_q |= Q(comment__icontains=search_query)
 
     # 2. Создаем Q-объект для фильтрации по статусам
@@ -87,9 +87,7 @@ def orders_list(request) -> HttpResponse:
     orders = Order.objects.prefetch_related("services").select_related("master").filter(search_q & status_q).order_by(ordering)
 
     context = {"orders": orders}
-    for order in orders:
-        order.services_list = order.services.all()
-        
+
     return render(request, "orders_list.html", context=context)
 
 @login_required
@@ -100,10 +98,9 @@ def order_detail(request, order_id) -> HttpResponse:
     param order_id: id заявки
     '''
     try:
-        order = Order.objects.get(id=order_id)
+        order = Order.objects.prefetch_related("services").select_related("master").annotate(total_price=Sum('services__price')).get(id=order_id)
     except Order.DoesNotExist:
         return HttpResponse('Заявка не найдена')
-    order.services_list = order.services.all()
     context = {'order': order}
     return render(request, "order_detail.html", context)
 
