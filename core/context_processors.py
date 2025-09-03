@@ -5,27 +5,39 @@ def menu_items(request):
     Контекстный процессор для добавления меню в контекст шаблонов.
     """
     menu = [
-        {"title": "Главная", "url_name": "landing", "url": reverse("landing")},
         {
-            "title": "Мастера",
+            "name": "Главная", 
+            "url_name": "landing" + "#top", 
+            "url": reverse("landing")},
+        {
+            "name": "Мастера",
             "url": reverse("landing") + "#masters",
         },
         {
-            "title": "Услуги",
+            "name": "Услуги",
             "url": reverse("landing") + "#services",
         },
         {
-            "title": "Отзывы",
+            "name": "Отзывы",
             "url": reverse("landing") + "#reviews",
         },
         {
-            "title": "Записаться",
+            "name": "Записаться",
             "url": reverse("landing") + "#get-order",
         },
     ]
 
-    menu_staff = [
-        {"title": "Заявки", "url": reverse("orders")},
+    staff_menu = [
+        {
+            "name": "Заявки",
+            "url": reverse("orders"),
+            "icon_class": "bi-clipboard-data",
+        },
+        {
+            "name": "Список услуг",
+            "url": reverse("services-list"),
+            "icon_class": "bi-list-check",
+        },
     ]
 
-    return {"menu_items": menu, "menu_staff_items": menu_staff}
+    return {"menu_items": menu, "menu_staff_items": staff_menu}

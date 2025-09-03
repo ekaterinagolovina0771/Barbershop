@@ -1,5 +1,7 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
+<section id='top' class="py-5">
     <div class="container">
         {# Секция "О нас" #}
         <section id="about" class="py-5">
@@ -36,6 +38,21 @@
                 </div>
             </div>
         </section>
+        {# Секция "Услуги" #}
+        <section id="master" class="py-5 bg-light">
+            <h2 class="text-center mb-4">Услуги</h2>
+            <div class="container">
+                <div class="row justify-content-center flex-wrap overflow-auto">
+                    {% for service in services %}
+                        {% include 'include_service_card.html' %}
+                    {% empty %}
+                        <div class="col-12">
+                            <p class="text-center text-muted">Услуги временно недоступны.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
         {# Секция "Отзывы" #}
         <section id="review" class="py-5 bg-light">
             <h2 class="text-center mb-4">Отзывы</h2>
@@ -47,13 +64,23 @@
                                 <div class="card-body">
                                     <p>Клиент: {{ review.client_name }}</p>
                                     <p>Отзыв: {{ review.text }}</p>
-                                    {% comment %} <p>Оценка: {{ review.rating }}</p> {% endcomment %}
+                                    <p>Оценка: {{ review.rating }}</p>
                                     <p>Мастер: {{ review.master.name }}</p>
                                 </div>
                             </div>
                         </div>
                     {% endfor %}
                 </div>
+            </div>
+        </section>
+        {# Секция "Записаться" (теперь просто ссылка) #}
+        <section id="get-order" class="py-5 bg-light text-center">
+            <div class="container">
+                <h2 class="text-center mb-4">Готовы преобразиться?</h2>
+                <p class="lead mb-4">Нажмите на кнопку, чтобы перейти на страницу записи и выбрать удобное время.</p>
+                <a href="{% url 'order-page' %}" class="btn btn-success btn-lg px-5">
+            Перейти к форме записи
+                </a>
             </div>
         </section>
     </div>

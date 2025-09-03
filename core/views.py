@@ -1,8 +1,11 @@
 # core/views.py
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, HttpResponse, redirect
+from django.http import JsonResponse
+from django.contrib import messages
 from .models import Master, Service, Order, Review
 from django.db.models import Q, Avg, Sum, Count
 from django.contrib.auth.decorators import login_required
+from .forms import OrderForm
 
 
 
@@ -108,3 +111,24 @@ def master_list(request):
     masters = Master.objects.annotate(rating=Avg('reviews__rating')).values('name', 'rating')
     print(masters)
     return render(request, 'landing.html', {'masters': masters})
+
+def order_page(request):
+    form = OrderForm()
+    return render(request, 'order_page.html', {'form': form})
+
+def order_create(request):
+    if request.method == "POST":
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Заявка успешно отправлена!")
+            return redirect("thanks")
+        # Если форма невалидна, снова рендерим страницу с формой и ошибками
+        return render(request, 'order_page.html', {'form': form})
+    # Если метод не POST, перенаправляем на страницу с формой
+    return redirect('order-page')
+
+
+def services_list(request):
+    services = Service.objects.all()
+    return render(request, "services_list.html", {"services": services})
