@@ -32,6 +32,13 @@ class Order(models.Model):
     services = models.ManyToManyField("Service", related_name='orders', verbose_name='Услуги')
     appointment_date = models.DateTimeField(verbose_name="Дата и время приема")
 
+    def __str__(self):
+        return f'Имя клиента: {self.client_name}, тел.: {self.phone}'
+
+    class Meta:
+        verbose_name = "Заявка"
+        verbose_name_plural = "Заявки"
+
 class Master(models.Model):
     '''
     Модель мастера
@@ -53,7 +60,11 @@ class Master(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Активен")
 
     def __str__(self):
-        return f'Имя: {self.name}, телефон: {self.phone}'
+        return f'Имя мастера: {self.name}, телефон: {self.phone}'
+    
+    class Meta:
+        verbose_name = "Мастер"
+        verbose_name_plural = "Мастера"
 
 class Service(models.Model):
     '''
@@ -76,7 +87,9 @@ class Service(models.Model):
     def __str__(self):
         return f'{self.name} - {self.price}'
 
-
+    class Meta:
+        verbose_name = "Услуга"
+        verbose_name_plural = "Услуги"
 
 
 class Review(models.Model):
@@ -98,3 +111,9 @@ class Review(models.Model):
     rating = models.PositiveSmallIntegerField(default=5,validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name="Оценка")
     is_published = models.BooleanField(default=True, verbose_name="Опубликован")
 
+    def __str__(self):
+        return f'Отзыв от {self.client_name}'
+
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"
