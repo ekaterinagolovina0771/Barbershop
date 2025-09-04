@@ -99,10 +99,17 @@ class OrderAdmin(admin.ModelAdmin):
             {"classes": ("collapse",), "fields": ("date_created", "date_updated")},
         ),
     )
+class ReviewInline(admin.TabularInline):
+    model = Review
+    fk_name = 'master'
+    extra = 0
+
 
 @admin.register(Master)
 class MasterAdmin(admin.ModelAdmin):
     list_display = ['name', 'phone', 'experience', 'is_active', 'count_services']
+
+    inlines = [ReviewInline]
 
 
 # Поисковая форма
