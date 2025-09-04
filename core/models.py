@@ -60,7 +60,7 @@ class Master(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Активен")
 
     def __str__(self):
-        return f'Имя мастера: {self.name}, телефон: {self.phone}'
+        return f'{self.name}'
     
     class Meta:
         verbose_name = "Мастер"
