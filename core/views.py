@@ -5,7 +5,7 @@ from django.contrib import messages
 from .models import Master, Service, Order, Review
 from django.db.models import Q, Avg, Sum, Count
 from django.contrib.auth.decorators import login_required
-from .forms import OrderForm
+from .forms import OrderForm, ServiceForm
 
 
 
@@ -134,32 +134,52 @@ def services_list(request):
     return render(request, "services_list.html", {"services": services})
 
 def service_create(request):
-    if request.method.GET:
-        # Создаем пустую форму
-        context = {'operation_type': 'Создать услугу'}
-        # Рендерим шаблон с формой в контексте
-        return render(request, 'service_create.html', context=context)
+    if request.method == "GET":
+        # Создать пустую форму
+        form = ServiceForm()
+        context = {
+            "operation_type": "Создание услуги",
+            "form": form,
+        }
+        return render(request, "service_class_form.html", context=context)
+    
     elif request.method == "POST":
-        # Получаем данные из запроса
-        service_name = request.POST.get("service_name")
-        service_description = request.POST.get("service_description")
-        service_price = request.POST.get("service_price")
-        if service_name and service_description and service_price.isdigit():
-            # Создаем новую услугу
-            service = Service.objects.create(name=service_name, description=service_description, price=service_price)
-            # Сохраняем услугу
+        # Создаем форму и помещаем в нее данные из POST-запроса
+        form = ServiceForm(request.POST)
+
+        # Проверяем, что форма валидна
+        if form.is_valid():
+            # Добываем данные из формы
+            name = form.cleaned_data["name"]
+            description = form.cleaned_data["description"]
+            price = form.cleaned_data["price"]
+            duration = form.cleaned_data["duration"]
+            is_popular = form.cleaned_data["is_popular"]
+            image =  form.cleaned_data["image"]
+
+            # Создать объект услуги
+            service = Service(
+                name=name,
+                description=description,
+                price=price,
+                duration=duration,
+                is_popular=is_popular,
+                image=image
+            )
+            # Сохранить объект в БД
             service.save()
-            # Перенаправляем на список услуг
+            
+            # Перенаправить на страницу со списком услуг
             return redirect("services-list")
         else:
-            messages.error(request, "Неверные данные")
-            return redirect("services-list")
-            # Создаем пустую форму
-            context = {'operation_type': 'Создать услугу'}
-            # Рендерим шаблон с формой в контексте
-            return render(request, 'service_create.html', context=context)
+            context = {
+                "operation_type": "Создание услуги",
+                "form": form,
+            }
+            return render(request, "service_class_form.html", context=context)
+        
     else:
-        # ошибка 405
+        # Вернуть ошибку 405 (Метод не разрешен)
         return HttpResponseNotAllowed(["GET", "POST"])
 
 
@@ -179,7 +199,7 @@ def service_update(request, service_id):
             "service": service,
 
         }
-        return render(request, "service_form.html", context=context)
+        return render(request, "service_class_form.html", context=context)
     
     elif request.method == "POST":
         # Получить данные из объекта запроса
@@ -212,7 +232,7 @@ def service_update(request, service_id):
                 "operation_type": "Обновление услуги",
                 "service": service,
             }
-            return render(request, "service_form.html", context=context)
+            return render(request, "service_class_form.html", context=context)
         
     else:
         # Вернуть ошибку 405 (Метод не разрешен)
