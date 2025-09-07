@@ -191,49 +191,56 @@ def service_update(request, service_id):
         except Service.DoesNotExist:
             # Если нет такой услуги, дам 404
             return HttpResponse("Услуга не найдена", status=404)
-        
-        
-        
+
+        form = ServiceForm(
+            initial={
+                "name": service.name,
+                "description": service.description,
+                "price": service.price,
+                "duration": service.duration,
+                "is_popular": service.is_popular,
+                "image": service.image,
+            }
+        )
         context = {
             "operation_type": "Обновление услуги",
             "service": service,
-
+            "form": form,
         }
         return render(request, "service_class_form.html", context=context)
-    
+
     elif request.method == "POST":
-        # Получить данные из объекта запроса
-        service_name = request.POST.get("service_name")
-        service_description = request.POST.get("service_description")
-        service_price = request.POST.get("service_price")
+        # Создаем форму и помещаем в нее данные из POST-запроса
+        form = ServiceForm(request.POST)
+        # Проверяем, что форма валидна
+        if form.is_valid():
+            # Добываем данные из формы
+            name = form.cleaned_data["name"]
+            description = form.cleaned_data["description"]
+            price = form.cleaned_data["price"]
+            duration = form.cleaned_data["duration"]
+            is_popular = form.cleaned_data["is_popular"]
+            image = form.cleaned_data["image"]
 
-        
-
-        # Получить объект сервиса
-        service = Service.objects.get(id=service_id)
-        service_price = float(service_price.replace(",", "."))
-        if service_name and service_description and service_price:
-            
-            # Создать объект сервиса
-            service = Service.objects.update(
-                name=service_name,
-                description=service_description,
-                price=service_price
+            # Обновляем объект услуги
+            service = Service.objects.filter(id=service_id).update(
+                name=name,
+                description=description,
+                price=price,
+                duration=duration,
+                is_popular=is_popular,
+                image=image,
             )
 
-            
-    
             # Перенаправить на страницу со списком услуг
             return redirect("services-list")
         else:
-            messages.error(request, "Ошибка при создании услуги")
-
             context = {
                 "operation_type": "Обновление услуги",
-                "service": service,
+                "form": form,
             }
             return render(request, "service_class_form.html", context=context)
-        
+
     else:
         # Вернуть ошибку 405 (Метод не разрешен)
         return HttpResponseNotAllowed(["GET", "POST"])
