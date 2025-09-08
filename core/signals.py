@@ -34,6 +34,7 @@ def notify_telegram_on_order_create(sender, instance, action, **kwargs):
 
 **Подробнее:** http://127.0.0.1:8000/admin/core/order/{instance.id}/change/
 
+
 #заказ
 
 """
