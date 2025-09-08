@@ -28,7 +28,7 @@ def notify_telegram_on_order_create(sender, instance, action, **kwargs):
 **Имя:** {instance.name}
 **Телефон:** {instance.phone}
 **Мастер:** {instance.master.name}
-**Дата записи:** {appointment_date}
+**Дата записи:** {instance.appointment_date}
 **Услуги:** {', '.join(list_services)}
 **Комментарий:** {instance.comment}
 
