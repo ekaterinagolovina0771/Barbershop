@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}
-{{ operation_type}}
+Напишите ваш отзыв о нас
 {% endblock title %}
 {% block content %}
 <div class="container mt-5">
     <div class="row">
-        <h1>{{ operation_type}} {{service.id}}</h1>
+        <h1>Напишите ваш отзыв о нас</h1>
     </div>
     <div class="row">
         <form method="POST">
@@ -22,20 +22,13 @@
             <!-- Выводим само поле (виджет) -->
             {{ field }}
 
-            <!-- Можно добавить кастомную логику, например, для чекбокса -->
-            {% if field.name == 'is_popular' %}
-                <label class="form-check-label" for="{{ field.id_for_label }}">
-                    Популярная услуга
-                </label>
-            {% endif %}
-
             <!-- Выводим текст помощи, если он есть -->
             {% if field.help_text %}
                 <small class="form-text text-muted">{{ field.help_text }}</small>
             {% endif %}
              {% endfor %}
         </div>
-            <button type="submit" class="btn btn-dark mt-3 mb-3">{{ operation_type}}</button>
+            <button type="submit" class="btn btn-dark mt-3 mb-3">Отправить отзыв</button>
         </form>
     </div>
    
