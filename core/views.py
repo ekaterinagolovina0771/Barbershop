@@ -46,28 +46,42 @@ def review_create(request):
             return render(request, "review_class_form.html", {"form": form})
 
 
+class LandingTemplateView(TemplateView):
+    """Классовая view для главной страницы"""
+
+    template_name = "landing.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["masters"] = Master.objects.prefetch_related("services").annotate(
+            num_services=Count("services")
+        )
+        context["services"] = Service.objects.all()
+        context["reviews"] = Review.objects.all()
+
+        return context
 
 
-def landing(request):
-    """
-    Отвечает за маршрут '/'
-    """
-    # masters = Master.objects.prefetch_related("services").all()
-    masters = Master.objects.prefetch_related("services").annotate(
-        num_services=Count("services")
-    )
+# def landing(request):
+#     """
+#     Отвечает за маршрут '/'
+#     """
+#     # masters = Master.objects.prefetch_related("services").all()
+#     masters = Master.objects.prefetch_related("services").annotate(
+#         num_services=Count("services")
+#     )
 
-    # Получаем все услуги отдельным запросом
-    services = Service.objects.all()
+#     # Получаем все услуги отдельным запросом
+#     services = Service.objects.all()
 
-    # reviews = Review.objects.all()  # Модель Review еще не создана
+#     # reviews = Review.objects.all()  # Модель Review еще не создана
 
-    context = {
-        "masters": masters,
-        "services": services,
-        # "reviews": reviews,
-    }
-    return render(request, "landing.html", context=context)
+#     context = {
+#         "masters": masters,
+#         "services": services,
+#         # "reviews": reviews,
+#     }
+#     return render(request, "landing.html", context=context)
 
 
 # def thanks(request):
