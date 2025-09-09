@@ -2,49 +2,53 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.http import JsonResponse, HttpResponseNotAllowed
 from django.contrib import messages
-# from .data import orders
 from .models import Order, Master, Service, Review
 from .forms import ServiceForm, OrderForm, ReviewModelForm
-from django.db.models import Q, Count, Sum
+from django.db.models import Q, Count, Sum, F
+
 # Импорт классовых вью, View, TemplateView, ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.views import View
-from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView,)
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    UpdateView,
+    DeleteView,
+    TemplateView,
+)
 from django.urls import reverse_lazy, reverse
 
-# def get_services_by_master(request, master_id):
-#     master = Master.objects.prefetch_related("services").get(id=master_id)
-#     services = master.services.all()
 
-#     services_data = [{"id": service.id, "name": service.name} for service in services]
-
-#     return JsonResponse({"services": services_data})
 class AjaxMasterServiceView(View):
     """
     Вью для отдачи массива объектов услуг по ID мастера.
     Обслуживает AJAX запросы формы создания заказа.
     """
-    
+
     def get(self, request, master_id):
         master = Master.objects.prefetch_related("services").get(id=master_id)
         services = master.services.all()
 
-        services_data = [{"id": service.id, "name": service.name} for service in services]
+        services_data = [
+            {"id": service.id, "name": service.name} for service in services
+        ]
 
         return JsonResponse({"services": services_data})
+
 
 def review_create(request):
     if request.method == "GET":
         form = ReviewModelForm()
         return render(request, "review_class_form.html", {"form": form})
-    
+
     elif request.method == "POST":
         form = ReviewModelForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            # Перенаправим на thanks и передадим source = review-create
             return redirect("thanks", source="review-create")
         else:
             return render(request, "review_class_form.html", {"form": form})
-
 
 class LandingTemplateView(TemplateView):
     """Классовая view для главной страницы"""
@@ -61,35 +65,6 @@ class LandingTemplateView(TemplateView):
 
         return context
 
-
-# def landing(request):
-#     """
-#     Отвечает за маршрут '/'
-#     """
-#     # masters = Master.objects.prefetch_related("services").all()
-#     masters = Master.objects.prefetch_related("services").annotate(
-#         num_services=Count("services")
-#     )
-
-#     # Получаем все услуги отдельным запросом
-#     services = Service.objects.all()
-
-#     # reviews = Review.objects.all()  # Модель Review еще не создана
-
-#     context = {
-#         "masters": masters,
-#         "services": services,
-#         # "reviews": reviews,
-#     }
-#     return render(request, "landing.html", context=context)
-
-
-# def thanks(request):
-#     """
-#     Отвечает за маршрут 'thanks/'
-#     """
-#     context = {"test_var": "Привет из базового шаблона!"}
-#     return render(request, "thanks.html", context=context)
 
 class ThanksTemplateView(TemplateView):
     """
@@ -112,15 +87,19 @@ class ThanksTemplateView(TemplateView):
             source = kwargs["source"]
             if source == "order-create":
                 context["title"] = "Спасибо за заказ!"
-                context["message"] = "Ваш заказ принят. Скоро с вами свяжется наш менеджер для уточнения деталей."
+                context["message"] = (
+                    "Ваш заказ принт. Скоро с вами свяжется наш менеджер для уточнения деталей."
+                )
             elif source == "review-create":
                 context["title"] = "Спасибо за отзыв!"
-                context["message"] = "Ваш отзыв принят и отправлен на модерацию. После проверки он появится на сайте."
+                context["message"] = (
+                    "Ваш отзыв принят и отправлен на модерацию. После проверки он появится на сайте."
+                )
 
         else:
             context["title"] = "Спасибо!"
             context["message"] = "Спасибо за ваше обращение!"
-        
+
         return context
 
 
@@ -192,25 +171,42 @@ def orders_list(request):
     return render(request, "orders_list.html", context=context)
 
 
-def order_detail(request, order_id):
-    """
-    Отвечает за маршрут 'orders/<int:order_id>/'
-    :param request: HttpRequest
-    :param order_id: int (номер заказа)
-    """
-    order = (
-        Order.objects.prefetch_related("services")
-        .select_related("master")
-        .annotate(total_price=Sum("services__price"))
-        .get(id=order_id)
-    )
+class OrderDetailView(DetailView):
+    model = Order
+    template_name = "order_detail.html"
+    context_object_name = "order"
+    pk_url_kwarg = "order_id" # Указываем, что id брать из URL kwarg 'order_id'
 
-    # TODO Добавить в модель Order view_count. Миграции. Дописать логику обновления через F объект. Сделать коммит. Допишу логику с сохранением в сессию во избежании накруторк!
+    def get_queryset(self):
+        """
+        Лучшее место для "жадной" загрузки и аннотаций.
+        Этот метод подготавливает оптимизированный QuerySet.
+        """
+        queryset = super().get_queryset()
+        return queryset.select_related("master").prefetch_related("services").annotate(
+            total_price=Sum("services__price")
+        )
 
-    context = {"order": order}
+    def get_object(self, queryset=None):
+        """
+        Лучшее место для логики, специфичной для одного объекта.
+        Например, для счетчика просмотров.
+        """
+        # Сначала получаем объект стандартным способом (он будет взят из queryset,
+        # который мы определили в get_queryset)
+        order = super().get_object(queryset)
 
-    return render(request, "order_detail.html", context=context)
+        # Теперь выполняем логику с сессией и счетчиком
+        session_key = f"order_{order.id}_viewed"
+        if not self.request.session.get(session_key):
+            self.request.session[session_key] = True
+            # Атомарно увеличиваем счетчик в БД
+            order.view_count = F("view_count") + 1
+            order.save(update_fields=["view_count"])
+            # Обновляем объект из БД, чтобы в шаблоне было актуальное значение
+            order.refresh_from_db()
 
+        return order
 
 def order_create(request):
     if request.method == "POST":

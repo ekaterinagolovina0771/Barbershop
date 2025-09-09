@@ -9,7 +9,7 @@ class Order(models.Model):
         ("canceled", "Отменена"),
     )
 
-    name = models.CharField(max_length=100, verbose_name="Имя", default='Unknown')
+    name = models.CharField(max_length=100, verbose_name="Имя")
     phone = models.CharField(max_length=20, verbose_name="Телефон")
     comment = models.CharField(
         max_length=500, null=True, blank=True, verbose_name="Комментарий"
@@ -31,6 +31,10 @@ class Order(models.Model):
     )
     services = models.ManyToManyField(
         "Service", verbose_name="Услуги", default=None, related_name="orders"
+    )
+
+    view_count = models.PositiveIntegerField(
+        default=0, verbose_name="Количество просмотров", blank=True
     )
 
     def __str__(self):
@@ -120,5 +124,6 @@ class Review(models.Model):
         upload_to="reviews/", blank=True, null=True, verbose_name="Фото"
     )
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default="new", verbose_name="Статус")
+        max_length=20, choices=STATUS_CHOICES, default="new", verbose_name="Статус"
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
