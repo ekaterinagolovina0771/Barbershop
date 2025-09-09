@@ -11,13 +11,26 @@ from django.views import View
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView,)
 from django.urls import reverse_lazy, reverse
 
-def get_services_by_master(request, master_id):
-    master = Master.objects.prefetch_related("services").get(id=master_id)
-    services = master.services.all()
+# def get_services_by_master(request, master_id):
+#     master = Master.objects.prefetch_related("services").get(id=master_id)
+#     services = master.services.all()
 
-    services_data = [{"id": service.id, "name": service.name} for service in services]
+#     services_data = [{"id": service.id, "name": service.name} for service in services]
 
-    return JsonResponse({"services": services_data})
+#     return JsonResponse({"services": services_data})
+class AjaxMasterServiceView(View):
+    """
+    Вью для отдачи массива объектов услуг по ID мастера.
+    Обслуживает AJAX запросы формы создания заказа.
+    """
+    
+    def get(self, request, master_id):
+        master = Master.objects.prefetch_related("services").get(id=master_id)
+        services = master.services.all()
+
+        services_data = [{"id": service.id, "name": service.name} for service in services]
+
+        return JsonResponse({"services": services_data})
 
 def review_create(request):
     if request.method == "GET":
